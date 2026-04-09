@@ -10,3 +10,6 @@ __pycache__/
 
 # Bỏ qua file database nếu có
 data/*
+
+# Bỏ qua file
+readme.txt
