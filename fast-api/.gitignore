@@ -1,0 +1,12 @@
+# Bỏ qua thư mục môi trường ảo
+venv/
+__pycache__/
+
+# Bỏ qua két sắt chứa mật khẩu
+.env
+
+# Bỏ qua file log
+*.log
+
+# Bỏ qua file database nếu có
+data/*
