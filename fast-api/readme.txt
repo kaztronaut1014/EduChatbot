@@ -16,3 +16,8 @@ pip install -r requirements.txt
 
 #4 import data
     python scripts/import_data.py
+
+#Push lên git
+    git add .
+    git commit -m " "
+    git push

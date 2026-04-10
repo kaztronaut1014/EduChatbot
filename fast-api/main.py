@@ -1,5 +1,14 @@
 from fastapi import FastAPI
 from core.bot_engine import ask_bot
+import google.genai as genai
+
+# Xem các model của Gemini (đã bỏ qua vì không cần thiết, chỉ cần dùng 1 model duy nhất là "gemini-3.1-flash-lite" để tối ưu chi phí)
+# from dotenv import load_dotenv
+# import os
+
+# load_dotenv()
+# genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+# for m in genai.list_models(): print(m.name)
 
 app = FastAPI()
 

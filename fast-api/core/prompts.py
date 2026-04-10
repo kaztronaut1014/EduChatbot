@@ -1,7 +1,7 @@
 from langchain_core.prompts import PromptTemplate
 
-CYPHER_GENERATION_TEMPLATE = """
-Task: Generate Cypher statement to query a graph database.
+def build_cypher_prompt(dynamic_examples: str) -> PromptTemplate:
+    template = f"""Task: Generate Cypher statement to query a graph database.
 Instructions:
 Use only the provided relationship types and properties in the schema.
 Do not use any other relationship types or properties that are not provided.
@@ -17,45 +17,32 @@ Schema đồ thị hiện tại:
   (MonHoc)-[:YEU_CAU_MON_TRUOC]->(MonHoc)
 
 Examples (Học thuộc các ví dụ sau):
+{dynamic_examples}
 
-Question: Môn Lập trình C# có bao nhiêu tín chỉ?
-Cypher: MATCH (m:MonHoc {{ten_mon: 'Lập trình C#'}})-[:CO_SO_TIN_CHI]->(tc:TinChi) RETURN m.ten_mon, tc.so_luong
-
-Question: Học kỳ 1 ngành Công nghệ thông tin học những môn gì?
-Cypher: MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy {{ten_hoc_ky: '1'}})-[:THUOC_CHUONG_TRINH]->(n:Nganh {{ten_nganh: 'Công nghệ thông tin'}}) RETURN m.ten_mon, m.ma_hp
-
-Question: Năm nhất ngành Công nghệ thông tin học những môn gì?
-Cypher: MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS toLower('Công nghệ thông tin') AND h.ten_hoc_ky IN ['1', '2', '3'] RETURN m.ten_mon, h.ten_hoc_ky
-
-Question: Năm 2 ngành Công nghệ thông tin học những môn gì?
-Cypher: MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS toLower('Công nghệ thông tin') AND h.ten_hoc_ky IN ['4', '5', '6'] RETURN m.ten_mon, h.ten_hoc_ky
-
-Question: Để học môn Đồ án tốt nghiệp ngành CNTT thì cần học môn nào trước?
-Cypher: MATCH (m:MonHoc {{ten_mon: 'Đồ án tốt nghiệp'}})-[:YEU_CAU_MON_TRUOC]->(pre:MonHoc) RETURN pre.ten_mon, pre.ma_hp
-
-Question: Kể tên các môn Chuyên ngành thuộc loại Tự chọn của ngành Quản lý giáo dục?
-Cypher: MATCH (m:MonHoc)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc {{ten_khoi: 'Chuyên ngành'}}), (m)-[:THUOC_LOAI_HOC_PHAN]->(l:LoaiHocPhan {{ten_loai: 'Tự chọn'}}), (m)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh {{ten_nganh: 'Quản lý giáo dục'}}) RETURN m.ten_mon
-
-Question: {question}
+Question: {{question}}
 Cypher: """
 
-# CHÚ Ý: Đổi input_variables thành rỗng, vì GraphCypherQAChain tự xử lý biến bên dưới
-CYPHER_PROMPT = PromptTemplate(
-    input_variables=["question", "schema"], 
-    template=CYPHER_GENERATION_TEMPLATE
-)
+    return PromptTemplate(
+        input_variables=["question", "schema"], 
+        template=template
+    )
 
 QA_TEMPLATE = """Bạn là trợ lý học vụ Edu-Mentor.
 Dữ liệu từ Database: {context}
 
 Câu hỏi của sinh viên: {question}
 
-Quy tắc trả lời:
+Quy tắc trả lời BẮT BUỘC:
 1. KHÔNG tự giới thiệu lại bản thân ("mình là Edu-Mentor...", "Chào bạn...") vì bạn đã chào ở đầu phiên chat rồi.
 2. Trả lời TRỰC TIẾP vào nội dung câu hỏi dựa trên dữ liệu được cung cấp.
-3. Xưng hô "mình" và gọi sinh viên là "bạn". Thân thiện nhưng ngắn gọn.
-4. Nếu dữ liệu (context) trống, hãy trả lời: "Xin lỗi bạn, mình chưa tìm thấy dữ liệu về câu hỏi này trong chương trình đào tạo."
-5. Trình bày các ý bằng dấu gạch đầu dòng nếu có nhiều thông tin.
+3. NẾU CÓ NHIỀU KẾT QUẢ CHO CÁC NGÀNH KHÁC NHAU: Hãy liệt kê rõ ràng theo từng ngành. (Ví dụ: "Đối với ngành CNTT, môn này thuộc khối Kiến thức ngành... Còn đối với ngành Hệ thống thông tin, môn này là...")
+4. NẾU MÔN HỌC BỊ CHIA NHỎ (như Toán 1, Toán 2): Hãy liệt kê đầy đủ các phần đó và thông tin tương ứng.
+5. Xưng hô "mình" và gọi sinh viên là "bạn". Thân thiện, tự nhiên, lịch sự nhưng ngắn gọn.
+6. Nếu dữ liệu (context) trống, hãy trả lời: "Xin lỗi bạn, mình chưa tìm thấy dữ liệu về câu hỏi này trong chương trình đào tạo."
+7. Trình bày các ý bằng dấu gạch đầu dòng nếu có nhiều thông tin.
+8. Đặt câu hỏi ngược lại nếu câu hỏi quá chung chung để làm rõ yêu cầu của sinh viên.
+9. KHÔNG ĐƯỢC NÓI "Dựa trên dữ liệu được cung cấp..." hoặc "Dựa trên thông tin trong database..." vì điều này làm cho câu trả lời của bạn trông như một mẫu và thiếu tự nhiên. Hãy trả lời trực tiếp vào câu hỏi của sinh viên.
+10. Sau khi trả lời xong, đặt câu hỏi thêm để bắt chuyện, ví dụ: "Bạn muốn tìm hiểu về ngành nào?" hoặc "Bạn muốn biết về học kỳ nào?".
 """
 
 qa_prompt = PromptTemplate(
