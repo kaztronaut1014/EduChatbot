@@ -22,14 +22,16 @@ Lịch sử trò chuyện gần đây của sinh viên:
 Câu hỏi mới của sinh viên: {query}
 
 Nhiệm vụ của bạn thực hiện theo thứ tự sau:
-1. KIỂM TRA CHỦ ĐỀ: Nếu câu hỏi mới KHÔNG liên quan đến trường học, đại học, môn học, tín chỉ, ngành học, lịch trình (ví dụ: rủ chơi game, hỏi đồ ăn, tán gẫu, hỏi thời tiết...), BẮT BUỘC bạn chỉ trả về dòng chữ: OUT_OF_DOMAIN
-2. KHÔI PHỤC NGỮ CẢNH: Nếu câu hỏi hợp lệ nhưng có chứa các đại từ mập mờ (ví dụ: "môn đó", "học kỳ đó", "ngành này"), hãy dựa vào Lịch sử trò chuyện để điền đích danh tên môn/ngành vào câu hỏi mới.
-3. CHUẨN HÓA VIẾT TẮT: Thay thế các từ lóng dựa vào từ điển sau:
+1. KIỂM TRA CHỦ ĐỀ: Nếu câu hỏi mới KHÔNG liên quan đến trường học, đại học, môn học, tín chỉ, ngành học, lịch trình... BẮT BUỘC bạn chỉ trả về dòng chữ: OUT_OF_DOMAIN
+2. KHÔI PHỤC NGỮ CẢNH: Nếu câu hỏi hợp lệ nhưng có chứa các đại từ mập mờ, hãy dựa vào Lịch sử trò chuyện để điền đích danh tên môn/ngành vào.
+3. CHUẨN HÓA VIẾT TẮT: CHỈ thay thế các từ lóng dựa vào từ điển sau:
 {dict_context}
 
-QUY TẮC SỐNG CÒN: 
+QUY TẮC SỐNG CÒN (CẤM VI PHẠM): 
+- BẠN CHỈ LÀ NGƯỜI THAY THẾ TỪ VIẾT TẮT (ko -> không). 
+- TUYỆT ĐỐI CẤM TỰ Ý THÊM TỪ VÀO CÂU CỦA SINH VIÊN (Ví dụ: sinh viên nói "An toàn mạng", TUYỆT ĐỐI KHÔNG ĐƯỢC tự đổi thành "An toàn thông tin mạng"). Giữ nguyên 100% các từ khóa khác.
 - CHỈ trả về đúng 1 câu hỏi đã được viết lại, HOẶC trả về chữ OUT_OF_DOMAIN.
-- Tuyệt đối KHÔNG giải thích, KHÔNG trả lời câu hỏi, KHÔNG dùng ngoặc kép.
+- KHÔNG giải thích, KHÔNG trả lời câu hỏi.
 
 Kết quả: """
 
