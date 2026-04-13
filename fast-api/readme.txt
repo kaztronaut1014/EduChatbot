@@ -16,6 +16,9 @@ pip install -r requirements.txt
 
 #4 import data
     python scripts/import_data.py
+    
+#5 Add Dynamic FewShot
+    python scripts/seed_fewshot.py
 
 #Push lên git
     git add .

@@ -65,6 +65,12 @@ examples = [
         "id": "ex10",
         "question": "Chuyên ngành Kỹ thuật phần mềm (hoặc chuyên ngành X) gồm những môn nào?",
         "cypher": "MATCH (m:MonHoc)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc), (m)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(k.ten_khoi) CONTAINS toLower('chuyên ngành kỹ thuật phần mềm') RETURN m.ten_mon, h.ten_hoc_ky, n.ten_nganh, k.ten_khoi"
+    },
+    
+    {
+         "id": "ex11",
+        "question": "Liệt kê tất cả các ngành học đang có trong cơ sở dữ liệu? Có bao nhiêu ngành học?",
+        "cypher": "MATCH (n:Nganh) RETURN collect(n.ten_nganh) AS danh_sach_nganh, count(n) AS so_luong"
     }
 
 ]
