@@ -14,7 +14,7 @@ pip install -r requirements.txt
 #3 chạy frontend
     streamlit run frontend/app_ui.py
 
-#4 import data
+#4 import data / đã có dữ liệu ĐỪNG CHẠY!!
     python scripts/import_data.py
     
 #5 Add Dynamic FewShot

@@ -37,8 +37,8 @@ examples = [
     },
     {
         "id": "ex6",
-        "question": "Học kỳ 1 ngành Quản lý giáo dục (hoặc ngành Z) có tổng cộng bao nhiêu tín chỉ?",
-        "cypher": "MATCH (m:MonHoc)-[:CO_SO_TIN_CHI]->(tc:TinChi), (m)-[:THUOC_HOC_KY]->(h:HocKy {{ten_hoc_ky: '1'}})-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS toLower('quản lý giáo dục') RETURN n.ten_nganh, h.ten_hoc_ky, sum(toInteger(tc.so_luong)) AS Tong_Tin_Chi"
+        "question": "Học kỳ 1 ngành Quản lý giáo dục (hoặc ngành Z) có tổng cộng bao nhiêu tín chỉ? Học kỳ này học những môn gì?",
+        "cypher": "MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy {{ten_hoc_ky: '1'}})-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS toLower('quản lý giáo dục') OPTIONAL MATCH (m)-[:CO_SO_TIN_CHI]->(tc:TinChi) OPTIONAL MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) RETURN n.ten_nganh, h.ten_hoc_ky, m.ten_mon, tc.so_luong, k.ten_khoi"
     },
     {
         "id": "ex7",
@@ -66,11 +66,11 @@ examples = [
         "question": "Chuyên ngành Kỹ thuật phần mềm (hoặc chuyên ngành X) gồm những môn nào?",
         "cypher": "MATCH (m:MonHoc)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc), (m)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(k.ten_khoi) CONTAINS toLower('chuyên ngành kỹ thuật phần mềm') RETURN m.ten_mon, h.ten_hoc_ky, n.ten_nganh, k.ten_khoi"
     },
-    
+    # --- XỬ LÝ LIỆT KÊ MÔN HỌC THEO HỌC KỲ (BẮT BUỘC LẤY KHỐI KIẾN THỨC VÀ HỌC KỲ) ---
     {
-         "id": "ex11",
-        "question": "Liệt kê tất cả các ngành học đang có trong cơ sở dữ liệu? Có bao nhiêu ngành học?",
-        "cypher": "MATCH (n:Nganh) RETURN collect(n.ten_nganh) AS danh_sach_nganh, count(n) AS so_luong"
+        "id": "ex11",
+        "question": "Học kỳ 2 ngành Công nghệ thông tin học những môn gì? Cần học những môn nào trước?",
+        "cypher": "MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy {{ten_hoc_ky: '2'}})-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' OPTIONAL MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) OPTIONAL MATCH (m)-[:YEU_CAU_MON_TRUOC]->(pre:MonHoc) OPTIONAL MATCH (m)-[:CO_SO_TIN_CHI]->(tc:TinChi) RETURN m.ten_mon, k.ten_khoi, tc.so_luong, collect(DISTINCT pre.ten_mon) AS Mon_Tien_Quyet"
     }
 
 ]

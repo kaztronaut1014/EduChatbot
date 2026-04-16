@@ -53,7 +53,8 @@ def ask_bot(raw_query: str):
         verbose=True,
         cypher_prompt=dynamic_cypher_prompt, 
         qa_prompt=qa_prompt,
-        allow_dangerous_requests=True
+        allow_dangerous_requests=True,
+        top_k=100
     )
     
     response = chain.invoke({"query": clean_query})
