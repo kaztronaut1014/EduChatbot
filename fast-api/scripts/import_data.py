@@ -84,10 +84,14 @@ def import_excel_to_neo4j(file_path, ma_nganh, ten_nganh):
                 SET n.ten_nganh = $ten_nganh
                 
                 MERGE (tc:TinChi {so_luong: $tin_chi})
-                MERGE (kkt:KhoiKienThuc {ten_khoi: $khoi_kien_thuc})
-                MERGE (lhp:LoaiHocPhan {ten_loai: $loai_hoc_phan})
                 
-                // ĐÃ FIX: MERGE bằng mã HP để chống trùng
+                // ĐÃ FIX: Cách ly Khối kiến thức và Loại học phần theo từng Ngành
+                MERGE (kkt:KhoiKienThuc {id: $ma_nganh + '_' + $khoi_kien_thuc})
+                SET kkt.ten_khoi = $khoi_kien_thuc
+                
+                MERGE (lhp:LoaiHocPhan {id: $ma_nganh + '_' + $loai_hoc_phan})
+                SET lhp.ten_loai = $loai_hoc_phan
+                
                 MERGE (m:MonHoc {ma_hp: $ma_hp})
                 SET m.ten_mon = $ten_mon
                 
