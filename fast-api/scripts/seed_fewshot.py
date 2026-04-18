@@ -57,7 +57,7 @@ examples = [
         },
         {
             "id": "ex10",
-            "question": "Trường có bao nhiêu ngành tất cả?",
+            "question": "Có bao nhiêu ngành tất cả?",
             "cypher": "MATCH (n:Nganh) RETURN count(n) AS Tong_So_Nganh"
         },
         {
@@ -69,6 +69,16 @@ examples = [
             "id": "ex12",
             "question": "Ngành Ngôn ngữ Anh có những môn tự chọn và bắt buộc nào?",
             "cypher": "MATCH (m:MonHoc)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'ngôn ngữ anh' OPTIONAL MATCH (m)-[:THUOC_LOAI_HOC_PHAN]->(l:LoaiHocPhan) WHERE l.id STARTS WITH n.ma_nganh + '_' RETURN m.ten_mon, l.ten_loai"
+        },
+        {
+            "id": "ex13",
+            "question": "Tư vấn lộ trình học ngành Công nghệ thông tin? / 4 năm học ngành CNTT như thế nào? / Review chương trình đào tạo ngành CNTT?",
+            "cypher": "MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' OPTIONAL MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) WHERE k.id STARTS WITH n.ma_nganh + '_' RETURN toInteger(h.ten_hoc_ky) AS Hoc_Ky, k.ten_khoi, collect(m.ten_mon) AS Cac_Mon_Hoc ORDER BY Hoc_Ky"
+        },
+        {
+            "id": "ex14",
+            "question": "Năm nhất ngành Công nghệ thông tin học những môn gì? / Liệt kê chi tiết năm 1 ngành CNTT?",
+            "cypher": "MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' AND h.ten_hoc_ky IN ['1', '2', '3'] OPTIONAL MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) WHERE k.id STARTS WITH n.ma_nganh + '_' OPTIONAL MATCH (m)-[:THUOC_HOC_KY]->(all_h:HocKy)-[:THUOC_CHUONG_TRINH]->(n) RETURN h.ten_hoc_ky AS HK_Hien_Tai, k.ten_khoi, m.ten_mon, collect(DISTINCT all_h.ten_hoc_ky) AS Cac_HK ORDER BY toInteger(HK_Hien_Tai)"
         }
     ]
 

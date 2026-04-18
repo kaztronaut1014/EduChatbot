@@ -191,11 +191,11 @@ if __name__ == "__main__":
         {"file": "data/vietnamhoc_ekg.xlsx", "ma_nganh": "VNH", "ten_nganh": "Việt Nam học"}
     ]
     
-    driver = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
-    with driver.session() as session:
-        session.run("MATCH (n) DETACH DELETE n")
-        print("Đã dọn dẹp sạch sẽ Neo4j!")
-    driver.close()
+    # driver = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
+    # with driver.session() as session:
+    #     session.run("MATCH (n) DETACH DELETE n")
+    #     print("Đã dọn dẹp sạch sẽ Neo4j!")
+    # driver.close()
 
     for nganh in danh_sach_nganh:
         print(f"--- Đang nạp dữ liệu ngành: {nganh['ten_nganh']} ---")

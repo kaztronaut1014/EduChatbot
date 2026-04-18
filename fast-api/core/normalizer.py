@@ -22,15 +22,18 @@ Lịch sử trò chuyện gần đây của sinh viên:
 Câu hỏi mới của sinh viên: {query}
 
 Nhiệm vụ của bạn thực hiện theo thứ tự sau:
-1. KIỂM TRA CHỦ ĐỀ: Nếu câu hỏi mới KHÔNG liên quan đến trường học, đại học, môn học, tín chỉ, ngành học, lịch trình... BẮT BUỘC bạn chỉ trả về dòng chữ: OUT_OF_DOMAIN
-2. KHÔI PHỤC NGỮ CẢNH: Nếu câu hỏi hợp lệ nhưng có chứa các đại từ mập mờ, hãy dựa vào Lịch sử trò chuyện để điền đích danh tên môn/ngành vào.
-3. CHUẨN HÓA VIẾT TẮT: CHỈ thay thế các từ lóng dựa vào từ điển sau:
+1. KHÔI PHỤC NGỮ CẢNH: Nếu câu hỏi hợp lệ nhưng có chứa các đại từ mập mờ, hãy dựa vào Lịch sử trò chuyện để điền đích danh tên môn/ngành vào.
+2. CHUẨN HÓA VIẾT TẮT: CHỈ thay thế các từ lóng dựa vào từ điển sau:
 {dict_context}
-
+3. PHÂN LOẠI Ý ĐỊNH (QUAN TRỌNG NHẤT): Bạn PHẢI gắn thẻ (Tag) vào đầu câu hỏi dựa trên TỪ KHÓA BẮT BUỘC:
+   - [CURRICULUM]: Dành cho câu hỏi tra cứu nội dung học. Bắt buộc dùng thẻ này nếu có các từ khóa: "chương trình đào tạo", "khung chương trình", "lộ trình", "môn học", "tín chỉ", "học kỳ", "năm nhất", "năm 1", "năm 2", "năm 3", "năm 4", "môn tiên quyết", "học những gì", "điều kiện tốt nghiệp".
+   - [GENERAL_INFO]: Dành cho câu hỏi tìm hiểu chung. Bắt buộc dùng thẻ này nếu có các từ khóa: "thông tin ngành", "giới thiệu", "review", "ra làm gì", "cơ hội việc làm", "kỹ năng", "tổng quan".
+   - NẾU hỏi ngoài lề (nấu ăn, thời tiết...) -> BẮT BUỘC trả về đúng chữ: OUT_OF_DOMAIN
+   
 QUY TẮC SỐNG CÒN (CẤM VI PHẠM): 
 - BẠN CHỈ LÀ NGƯỜI THAY THẾ TỪ VIẾT TẮT (ko -> không). 
 - TUYỆT ĐỐI CẤM TỰ Ý THÊM TỪ VÀO CÂU CỦA SINH VIÊN (Ví dụ: sinh viên nói "An toàn mạng", TUYỆT ĐỐI KHÔNG ĐƯỢC tự đổi thành "An toàn thông tin mạng"). Giữ nguyên 100% các từ khóa khác.
-- CHỈ trả về đúng 1 câu hỏi đã được viết lại, HOẶC trả về chữ OUT_OF_DOMAIN.
+- Chỉ trả về 1 dòng duy nhất có chứa Thẻ và câu hỏi (Ví dụ: "[CURRICULUM] Học kỳ 2 ngành Công nghệ thông tin có môn gì?"), HOẶC trả về chữ OUT_OF_DOMAIN.
 - KHÔNG giải thích, KHÔNG trả lời câu hỏi.
 
 Kết quả: """

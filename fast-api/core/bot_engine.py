@@ -1,7 +1,7 @@
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_neo4j import GraphCypherQAChain
-from core.prompts import build_cypher_prompt, qa_prompt
+from core.prompts import build_cypher_prompt, qa_prompt, general_info_prompt
 from database.neo4j_manager import get_neo4j_graph
 from database.vector_db import get_dynamic_examples
 from core.normalizer import normalize_student_query 
@@ -24,44 +24,53 @@ def get_history_string():
     recent_history = MEMORY_HISTORY[-4:] 
     return "\n".join(recent_history)
 
+# Thêm import ở đầu file bot_engine.py
+from core.prompts import general_info_prompt
+
 def ask_bot(raw_query: str):
     print(f"\n[1] User gõ: {raw_query}")
-    
-    # Lấy lịch sử ném cho bác Phiên dịch
     chat_history_str = get_history_string()
     
-    # 1. Bác Lễ tân / Phiên dịch làm việc
+    # 1. Bác Lễ tân phân loại
     clean_query = normalize_student_query(raw_query, chat_history_str, llm)
     print(f"[2] Bot tự hiểu thành: {clean_query}")
     
-    # 2. XỬ LÝ GUARDRAILS (Từ chối khéo)
     if clean_query == "OUT_OF_DOMAIN":
-        reply = "Dạ, mình là trợ lý học vụ Edu-Mentor nên chỉ được phép hỗ trợ các vấn đề về chương trình đào tạo, môn học và tín chỉ thôi ạ. Bạn có câu hỏi nào về việc học không? 😊"
-        # Lưu câu hỏi rác này vào bộ nhớ để bot biết user vừa đùa dai
-        MEMORY_HISTORY.append(f"Sinh viên: {raw_query}")
-        MEMORY_HISTORY.append(f"Bot: {reply}")
+        reply = "Dạ, mình là trợ lý tư vấn giáo dục nên chỉ hỗ trợ các vấn đề về ngành học, môn học và hướng nghiệp thôi ạ 😊"
+        MEMORY_HISTORY.append(f"User: {raw_query}\nBot: {reply}")
         return reply
 
-    # 3. Luồng RAG bình thường (nếu câu hỏi hợp lệ)
-    dynamic_examples = get_dynamic_examples(clean_query)
+    # NGÃ RẼ 1: HỎI THÔNG TIN CHUNG (REVIEW NGÀNH/CHUYÊN NGÀNH)
+    if clean_query.startswith("[GENERAL_INFO]"):
+        actual_query = clean_query.replace("[GENERAL_INFO]", "").strip()
+        
+        # Lấy template chém gió và gọi LLM trả lời trực tiếp (Bỏ qua RAG)
+        prompt_val = general_info_prompt.format(question=actual_query)
+        response = llm.invoke(prompt_val)
+        
+        # --- ĐOẠN FIX LỖI PARSING Ở ĐÂY ---
+        if isinstance(response.content, list):
+            final_answer = response.content[0].get("text", "") if len(response.content) > 0 else ""
+        else:
+            final_answer = str(response.content)
+        # ----------------------------------
+        
+        MEMORY_HISTORY.append(f"Sinh viên: {actual_query}\nBot: {final_answer}")
+        return final_answer
+    
+    # NGÃ RẼ 2: HỎI MÔN HỌC, TÍN CHỈ (ĐI VÀO GRAPH RAG NEO4J NHƯ CŨ)
+    actual_query = clean_query.replace("[CURRICULUM]", "").strip()
+    dynamic_examples = get_dynamic_examples(actual_query)
     dynamic_cypher_prompt = build_cypher_prompt(dynamic_examples)
     
     chain = GraphCypherQAChain.from_llm(
-        cypher_llm=llm,
-        qa_llm=llm,
-        graph=graph,
-        verbose=True,
-        cypher_prompt=dynamic_cypher_prompt, 
-        qa_prompt=qa_prompt,
-        allow_dangerous_requests=True,
-        top_k=100
+        cypher_llm=llm, qa_llm=llm, graph=graph,
+        verbose=True, cypher_prompt=dynamic_cypher_prompt, 
+        qa_prompt=qa_prompt, allow_dangerous_requests=True, top_k=200
     )
     
-    response = chain.invoke({"query": clean_query})
+    response = chain.invoke({"query": actual_query})
     final_answer = response["result"]
     
-    # 4. Lưu lại lịch sử sau khi trả lời thành công
-    MEMORY_HISTORY.append(f"Sinh viên: {clean_query}") # Lưu câu đã làm sạch cho dễ hiểu
-    MEMORY_HISTORY.append(f"Bot: {final_answer}")
-    
+    MEMORY_HISTORY.append(f"Sinh viên: {actual_query}\nBot: {final_answer}")
     return final_answer
