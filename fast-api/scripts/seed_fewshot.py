@@ -79,6 +79,36 @@ examples = [
             "id": "ex14",
             "question": "Năm nhất ngành Công nghệ thông tin học những môn gì? / Liệt kê chi tiết năm 1 ngành CNTT?",
             "cypher": "MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' AND h.ten_hoc_ky IN ['1', '2', '3'] OPTIONAL MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) WHERE k.id STARTS WITH n.ma_nganh + '_' OPTIONAL MATCH (m)-[:THUOC_HOC_KY]->(all_h:HocKy)-[:THUOC_CHUONG_TRINH]->(n) RETURN h.ten_hoc_ky AS HK_Hien_Tai, k.ten_khoi, m.ten_mon, collect(DISTINCT all_h.ten_hoc_ky) AS Cac_HK ORDER BY toInteger(HK_Hien_Tai)"
+        },
+        {
+            "id": "ex15",
+            "question": "Môn Cơ sở lập trình có quan trọng không? / Rớt môn Cấu trúc dữ liệu bị chặn bao nhiêu môn? / Môn X có phải môn cổ chai không?",
+            "cypher": "MATCH (m:MonHoc)<-[:YEU_CAU_MON_TRUOC]-(next:MonHoc) WHERE toLower(m.ten_mon) CONTAINS 'cơ sở lập trình' RETURN m.ten_mon, count(next) AS So_Mon_Bi_Chan, collect(next.ten_mon) AS Danh_Sach_Mon_Bi_Chan"
+        },
+        {
+            "id": "ex16",
+            "question": "Ngành Công nghệ thông tin môn nào quan trọng nhất? / Các môn học cổ chai của ngành CNTT?",
+            "cypher": "MATCH (m:MonHoc)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' MATCH (m)<-[:YEU_CAU_MON_TRUOC]-(next:MonHoc) RETURN m.ten_mon, count(next) AS So_Mon_Bi_Chan, collect(next.ten_mon) AS Danh_Sach_Mon_Bi_Chan ORDER BY So_Mon_Bi_Chan DESC LIMIT 5"
+        },
+        {
+            "id": "ex17",
+            "question": "Chuyên ngành Kỹ thuật phần mềm môn nào quan trọng nhất? / Các môn cổ chai của chuyên ngành HTTT?",
+            "cypher": "MATCH (m:MonHoc)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) WHERE k.id STARTS WITH n.ma_nganh + '_' AND (NOT toLower(k.ten_khoi) CONTAINS 'chuyên ngành' OR toLower(k.ten_khoi) CONTAINS 'kỹ thuật phần mềm') MATCH (m)<-[:YEU_CAU_MON_TRUOC]-(next:MonHoc) RETURN m.ten_mon, count(next) AS So_Mon_Bi_Chan, collect(next.ten_mon) AS Danh_Sach_Mon_Bi_Chan ORDER BY So_Mon_Bi_Chan DESC LIMIT 5"
+        },
+        {
+            "id": "ex18",
+            "question": "Chương trình đào tạo ngành CNTT chuyên ngành Kỹ thuật máy tính? / Lộ trình chuyên ngành Hệ thống thông tin?",
+            "cypher": "MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) WHERE k.id STARTS WITH n.ma_nganh + '_' AND (NOT toLower(k.ten_khoi) CONTAINS 'chuyên ngành' OR toLower(k.ten_khoi) CONTAINS 'kỹ thuật máy tính') OPTIONAL MATCH (m)-[:THUOC_LOAI_HOC_PHAN]->(l:LoaiHocPhan) WHERE l.id STARTS WITH n.ma_nganh + '_' OPTIONAL MATCH (m)-[:CO_SO_TIN_CHI]->(tc:TinChi) OPTIONAL MATCH (m)-[:THUOC_HOC_KY]->(all_h:HocKy)-[:THUOC_CHUONG_TRINH]->(n) OPTIONAL MATCH (m)-[:YEU_CAU_MON_TRUOC]->(pre:MonHoc) RETURN toInteger(h.ten_hoc_ky) AS Hoc_Ky, k.ten_khoi, m.ten_mon, tc.so_luong, l.ten_loai, collect(DISTINCT all_h.ten_hoc_ky) AS Cac_HK, collect(DISTINCT pre.ten_mon) AS Mon_Tien_Quyet ORDER BY Hoc_Ky"
+        },
+        {
+            "id": "ex19",
+            "question": "Tính tổng số tín chỉ của chuyên ngành Khoa học máy tính? / Chuyên ngành Hệ thống thông tin bao nhiêu tín?",
+            "cypher": "MATCH (m:MonHoc)-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) WHERE k.id STARTS WITH n.ma_nganh + '_' AND (NOT toLower(k.ten_khoi) CONTAINS 'chuyên ngành' OR toLower(k.ten_khoi) CONTAINS 'khoa học máy tính') OPTIONAL MATCH (m)-[:CO_SO_TIN_CHI]->(tc:TinChi) OPTIONAL MATCH (m)-[:THUOC_LOAI_HOC_PHAN]->(l:LoaiHocPhan) WHERE l.id STARTS WITH n.ma_nganh + '_' OPTIONAL MATCH (m)-[:THUOC_HOC_KY]->(all_h:HocKy)-[:THUOC_CHUONG_TRINH]->(n) OPTIONAL MATCH (m)-[:YEU_CAU_MON_TRUOC]->(pre:MonHoc) RETURN m.ten_mon, tc.so_luong, k.ten_khoi, l.ten_loai, collect(DISTINCT all_h.ten_hoc_ky) AS Cac_HK, collect(DISTINCT pre.ten_mon) AS Mon_Tien_Quyet"
+        },
+        {
+            "id": "ex20",
+            "question": "Học kỳ 7 chuyên ngành Hệ thống thông tin có những môn gì? / Kỳ 6 chuyên ngành KTPM bao nhiêu tín?",
+            "cypher": "MATCH (m:MonHoc)-[:THUOC_HOC_KY]->(h:HocKy {{ten_hoc_ky: '7'}})-[:THUOC_CHUONG_TRINH]->(n:Nganh) WHERE toLower(n.ten_nganh) CONTAINS 'công nghệ thông tin' MATCH (m)-[:THUOC_KHOI_KIEN_THUC]->(k:KhoiKienThuc) WHERE k.id STARTS WITH n.ma_nganh + '_' AND (NOT toLower(k.ten_khoi) CONTAINS 'chuyên ngành' OR toLower(k.ten_khoi) CONTAINS 'hệ thống thông tin') OPTIONAL MATCH (m)-[:CO_SO_TIN_CHI]->(tc:TinChi) OPTIONAL MATCH (m)-[:THUOC_LOAI_HOC_PHAN]->(l:LoaiHocPhan) WHERE l.id STARTS WITH n.ma_nganh + '_' OPTIONAL MATCH (m)-[:YEU_CAU_MON_TRUOC]->(pre:MonHoc) RETURN m.ten_mon, tc.so_luong, k.ten_khoi, l.ten_loai, h.ten_hoc_ky, collect(DISTINCT pre.ten_mon) AS Mon_Tien_Quyet"
         }
     ]
 

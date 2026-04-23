@@ -12,7 +12,7 @@ with st.sidebar:
     st.markdown("### ℹ️ Thông tin hệ thống")
     st.info(
         "**Nguồn dữ liệu:**\n"
-        "Toàn bộ thông tin môn học, tín chỉ và lộ trình được trích xuất từ Chương trình đào tạo chính thức của trường Đại học Sài Gòn cập nhật năm 2025-2026."
+        "Toàn bộ thông tin môn học, tín chỉ và lộ trình được trích xuất từ Chương trình đào tạo chính thức của trường Đại học Sài Gòn năm 2024-2028."
     )
     st.warning(
         "**⚠️ Lưu ý (Disclaimer):**\n"
@@ -22,7 +22,7 @@ with st.sidebar:
 # --- KẾT THÚC PHẦN DISCLAIMER ---
 
 st.caption(
-    "💡 **Nguồn dữ liệu:** Cập nhật từ Chương trình đào tạo chính thức của trường Đại học Sài Gòn cập nhật năm 2025-2026.\n"
+    "💡 **Nguồn dữ liệu:** Cập nhật từ Chương trình đào tạo chính thức của trường Đại học Sài Gòn năm 2024-2028.\n"
     "*(Lưu ý: Edu-Mentor là AI tư vấn, thông tin chỉ mang tính tham khảo. Vui lòng đối chiếu với Phòng Giáo vụ trước khi đăng ký môn học).* "
 )
 

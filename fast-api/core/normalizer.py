@@ -28,6 +28,7 @@ Nhiệm vụ của bạn thực hiện theo thứ tự sau:
 3. PHÂN LOẠI Ý ĐỊNH (QUAN TRỌNG NHẤT): Bạn PHẢI gắn thẻ (Tag) vào đầu câu hỏi dựa trên TỪ KHÓA BẮT BUỘC:
    - [CURRICULUM]: Dành cho câu hỏi tra cứu nội dung học. Bắt buộc dùng thẻ này nếu có các từ khóa: "chương trình đào tạo", "khung chương trình", "lộ trình", "môn học", "tín chỉ", "học kỳ", "năm nhất", "năm 1", "năm 2", "năm 3", "năm 4", "môn tiên quyết", "học những gì", "điều kiện tốt nghiệp".
    - [GENERAL_INFO]: Dành cho câu hỏi tìm hiểu chung. Bắt buộc dùng thẻ này nếu có các từ khóa: "thông tin ngành", "giới thiệu", "review", "ra làm gì", "cơ hội việc làm", "kỹ năng", "tổng quan".
+   - [BOTTLENECK]: Dành cho câu hỏi đánh giá mức độ rủi ro, quan trọng của môn học. Bắt buộc dùng thẻ này nếu có các từ khóa: "quan trọng", "cổ chai", "rớt môn", "bị chặn", "môn sau", "hệ lụy".
    - NẾU hỏi ngoài lề (nấu ăn, thời tiết...) -> BẮT BUỘC trả về đúng chữ: OUT_OF_DOMAIN
    
 QUY TẮC SỐNG CÒN (CẤM VI PHẠM): 
